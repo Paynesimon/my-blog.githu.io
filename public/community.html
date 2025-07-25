@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社区 | 个人博客</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- 导航栏（与首页一致） -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">驴思源的草料棚</a>
+      <div class="nav-links">
+        <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+        <a href="projects.html"><i class="fas fa-code-branch"></i> 项目</a>
+        <a href="works.html"><i class="fas fa-lightbulb"></i> 作品</a>
+        <a href="community.html"><i class="fas fa-comments"></i> 社区</a>
+        <a href="about.html"><i class="fas fa-user"></i> 关于我</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主要内容 -->
+  <div class="container">
+    <div class="banner">
+      <h1>社区交流</h1>
+      <p>分享想法、提问交流，一起讨论项目和作品的细节</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px; margin-top: 30px;">
+      <!-- 左侧：帖子列表和发布区 -->
+      <div>
+        <!-- 发布帖子区域 -->
+        <div style="background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3 style="margin-bottom: 15px;"><i class="fas fa-pen"></i> 发布新帖子</h3>
+          
+          <!-- 未登录状态提示 -->
+          <div id="login-prompt">
+            <p>请先<a href="javascript:void(0)" id="show-login" class="login-btn" style="color: #3498db; text-decoration: none;">登录</a>后发布内容</p>
+          </div>
+          
+          <!-- 发布表单（默认隐藏，登录后显示） -->
+          <form id="post-form" style="display: none;">
+            <div style="margin-bottom: 15px;">
+              <label for="post-title" style="display: block; margin-bottom: 8px; font-weight: 500;">标题</label>
+              <input type="text" id="post-title" placeholder="请输入帖子标题" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label for="post-category" style="display: block; margin-bottom: 8px; font-weight: 500;">分类</label>
+              <select id="post-category" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+                <option value="project">项目讨论</option>
+                <option value="work">作品反馈</option>
+                <option value="tech">技术交流</option>
+                <option value="other">其他话题</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <label for="post-content" style="display: block; margin-bottom: 8px; font-weight: 500;">内容</label>
+              <textarea id="post-content" rows="4" placeholder="分享你的想法或问题..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; resize: vertical;"></textarea>
+            </div>
+            <button type="submit" class="btn">发布帖子</button>
+          </form>
+        </div>
+
+        <!-- 帖子列表 -->
+        <div id="posts-list">
+          <!-- 新帖子：欢迎来到驴友的草料房 -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-content">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="images/user-admin.jpg" alt="博主头像" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                  <div>
+                    <div style="font-weight: 500;">驴思源</div>
+                    <div style="font-size: 0.8rem; color: #777;">刚刚 · 公告</div>
+                  </div>
+                </div>
+                <div style="color: #777; font-size: 0.9rem;">
+                  <i class="far fa-comment"></i> 0 条评论
+                </div>
+              </div>
+              
+              <h3 class="card-title" style="margin-bottom: 10px;">欢迎来到驴友的草料房</h3>
+              <p class="card-desc">这里是我记录学习、分享实践的个人空间，欢迎大家交流讨论，一起成长进步！</p>
+              
+              <div style="display: flex; gap: 15px; margin-top: 15px; align-items: center;">
+                <button class="like-btn btn btn-secondary" data-post-id="0">
+                  <i class="far fa-thumbs-up"></i> <span>0</span>
+                </button>
+                <button class="show-comments btn btn-secondary" data-post-id="0">
+                  <i class="far fa-comment"></i> 查看评论
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 帖子1 -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-content">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="images/user1.jpg" alt="用户头像" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                  <div>
+                    <div style="font-weight: 500;">张小明</div>
+                    <div style="font-size: 0.8rem; color: #777;">2天前 · 项目讨论</div>
+                  </div>
+                </div>
+                <div style="color: #777; font-size: 0.9rem;">
+                  <i class="far fa-comment"></i> 8 条评论
+                </div>
+              </div>
+              
+              <h3 class="card-title" style="margin-bottom: 10px;">关于任务管理应用的功能建议</h3>
+              <p class="card-desc">使用了你的任务管理应用原型，感觉整体体验很流畅！有个小建议：是否可以增加日历视图，方便查看月度任务安排？另外标签颜色如果能自定义就更好了...</p>
+              
+              <div style="display: flex; gap: 15px; margin-top: 15px; align-items: center;">
+                <button class="like-btn btn btn-secondary" data-post-id="1">
+                  <i class="far fa-thumbs-up"></i> <span>12</span>
+                </button>
+                <button class="show-comments btn btn-secondary" data-post-id="1">
+                  <i class="far fa-comment"></i> 查看评论
+                </button>
+              </div>
+              
+              <!-- 评论区（默认隐藏） -->
+              <div class="comments-section" data-post-id="1" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; display: none;">
+                <h4 style="margin-bottom: 15px;">评论 (8)</h4>
+                
+                <!-- 评论列表 -->
+                <div style="margin-bottom: 20px;">
+                  <!-- 评论1 -->
+                  <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f1f1f1;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+                      <img src="images/user-admin.jpg" alt="管理员头像" style="width: 30px; height: 30px; border-radius: 50%;">
+                      <div>
+                        <div style="font-weight: 500; font-size: 0.9rem;">博主</div>
+                        <div style="font-size: 0.8rem; color: #777;">1天前</div>
+                      </div>
+                    </div>
+                    <p style="margin-left: 40px; font-size: 0.95rem;">感谢建议！日历视图已经在开发计划中了，预计下个版本会加入~ 标签颜色自定义是个好想法，我记下了！</p>
+                  </div>
+                  
+                  <!-- 评论2 -->
+                  <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f1f1f1;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+                      <img src="images/user2.jpg" alt="用户头像" style="width: 30px; height: 30px; border-radius: 50%;">
+                      <div>
+                        <div style="font-weight: 500; font-size: 0.9rem;">李华</div>
+                        <div style="font-size: 0.8rem; color: #777;">1天前</div>
+                      </div>
+                    </div>
+                    <p style="margin-left: 40px; font-size: 0.95rem;">同意楼上，另外希望能增加任务优先级设置，比如高/中/低</p>
+                  </div>
+                </div>
+                
+                <!-- 评论输入框 -->
+                <div>
+                  <textarea placeholder="写下你的评论..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; margin-bottom: 10px; resize: vertical;"></textarea>
+                  <button class="btn btn-secondary" style="float: right;">发表评论</button>
+                  <div style="clear: both;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 帖子2 -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-content">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="images/user3.jpg" alt="用户头像" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                  <div>
+                    <div style="font-weight: 500;">王小红</div>
+                    <div style="font-size: 0.8rem; color: #777;">5天前 · 技术交流</div>
+                  </div>
+                </div>
+                <div style="color: #777; font-size: 0.9rem;">
+                  <i class="far fa-comment"></i> 5 条评论
+                </div>
+              </div>
+              
+              <h3 class="card-title" style="margin-bottom: 10px;">UI设计中的颜色搭配请教</h3>
+              <p class="card-desc">看了你分享的UI设计作品，颜色搭配很舒服！想请教一下在深色模式下如何选择按钮颜色？尝试了几种总是感觉不够和谐，有什么技巧吗？</p>
+              
+              <div style="display: flex; gap: 15px; margin-top: 15px; align-items: center;">
+                <button class="like-btn btn btn-secondary" data-post-id="2">
+                  <i class="far fa-thumbs-up"></i> <span>8</span>
+                </button>
+                <button class="show-comments btn btn-secondary" data-post-id="2">
+                  <i class="far fa-comment"></i> 查看评论
+                </button>
+              </div>
+              
+              <!-- 评论区（默认隐藏） -->
+              <div class="comments-section" data-post-id="2" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; display: none;">
+                <!-- 评论内容结构同上 -->
+                <h4 style="margin-bottom: 15px;">评论 (5)</h4>
+                <div style="margin-bottom: 20px;">
+                  <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f1f1f1;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+                      <img src="images/user-admin.jpg" alt="管理员头像" style="width: 30px; height: 30px; border-radius: 50%;">
+                      <div>
+                        <div style="font-weight: 500; font-size: 0.9rem;">博主</div>
+                        <div style="font-size: 0.8rem; color: #777;">4天前</div>
+                      </div>
+                    </div>
+                    <p style="margin-left: 40px; font-size: 0.95rem;">深色模式下按钮颜色我通常会遵循两个原则：1. 与背景保持15%以上的对比度；2. 主按钮用品牌色的亮色调变体，次要按钮用半透明白色。可以试试用HSL色彩模式调整亮度...</p>
+                  </div>
+                </div>
+                <div>
+                  <textarea placeholder="写下你的评论..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; margin-bottom: 10px; resize: vertical;"></textarea>
+                  <button class="btn btn-secondary" style="float: right;">发表评论</button>
+                  <div style="clear: both;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 加载更多按钮 -->
+          <div style="text-align: center; margin: 20px 0;">
+            <button id="load-more" class="btn btn-secondary">加载更多</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右侧：社区信息和热门话题 -->
+      <div>
+        <!-- 登录卡片 -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-content">
+            <h3 class="card-title" style="font-size: 1.1rem;">登录社区</h3>
+            <p style="margin-bottom: 15px; font-size: 0.9rem; color: #666;">登录后可以发布帖子、评论和点赞</p>
+            
+            <button id="login-btn" class="btn" style="width: 100%; margin-bottom: 10px;">
+              <i class="fas fa-user"></i> 账号登录
+            </button>
+            <button class="btn btn-secondary" style="width: 100%;">
+              <i class="fab fa-weixin"></i> 微信登录
+            </button>
+          </div>
+        </div>
+        
+        <!-- 热门话题 -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-content">
+            <h3 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-fire"></i> 热门话题</h3>
+            <div style="margin-top: 15px;">
+              <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f1f1;">
+                <a href="javascript:void(0)" style="color: #3498db; text-decoration: none; font-size: 0.95rem;"># 任务管理应用功能建议</a>
+                <p style="font-size: 0.8rem; color: #777; margin-top: 5px;">12人参与 · 8条评论</p>
+              </div>
+              <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f1f1;">
+                <a href="javascript:void(0)" style="color: #3498db; text-decoration: none; font-size: 0.95rem;"># 深色模式设计技巧</a>
+                <p style="font-size: 0.8rem; color: #777; margin-top: 5px;">8人参与 · 5条评论</p>
+              </div>
+              <div>
+                <a href="javascript:void(0)" style="color: #3498db; text-decoration: none; font-size: 0.95rem;"># 前端性能优化经验</a>
+                <p style="font-size: 0.8rem; color: #777; margin-top: 5px;">5人参与 · 3条评论</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 社区规则 -->
+        <div class="card">
+          <div class="card-content">
+            <h3 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-info-circle"></i> 社区规则</h3>
+            <ul style="margin-top: 10px; font-size: 0.9rem; color: #666; padding-left: 20px;">
+              <li style="margin-bottom: 8px;">尊重他人，理性讨论</li>
+              <li style="margin-bottom: 8px;">禁止发布广告和无关内容</li>
+              <li style="margin-bottom: 8px;">技术讨论请保持专业性</li>
+              <li style="margin-bottom: 8px;">有问题可联系博主处理</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录弹窗（默认隐藏） -->
+  <div id="login-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: white; width: 100%; max-width: 400px; border-radius: 8px; padding: 30px; position: relative;">
+      <button id="close-login" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2 style="text-align: center; margin-bottom: 25px; color: #2c3e50;">登录社区</h2>
+      
+      <form id="login-form">
+        <div style="margin-bottom: 15px;">
+          <label for="username" style="display: block; margin-bottom: 8px; font-weight: 500;">用户名</label>
+          <input type="text" id="username" placeholder="请输入用户名" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="password" style="display: block; margin-bottom: 8px; font-weight: 500;">密码</label>
+          <input type="password" id="password" placeholder="请输入密码" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">登录</button>
+        <div style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+          还没有账号？<a href="javascript:void(0)" id="show-register" style="color: #3498db;">注册</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/community.js" type="module"></script>
+</body>
+</html>
+    

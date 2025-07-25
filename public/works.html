@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+ <html lang="zh-CN">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>我的作品 | 个人博客</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ </head>
+ <body>
+   <!-- 导航栏（与首页一致） -->
+   <nav class="navbar">
+     <div class="nav-container">
+       <a href="index.html" class="logo">驴思源的草料棚</a>
+       <div class="nav-links">
+         <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+         <a href="projects.html"><i class="fas fa-code-branch"></i> 项目</a>
+         <a href="works.html"><i class="fas fa-lightbulb"></i> 作品</a>
+         <a href="community.html"><i class="fas fa-comments"></i> 社区</a>
+         <a href="about.html"><i class="fas fa-user"></i> 关于我</a>
+       </div>
+     </div>
+   </nav>
+  
+   <!-- 主要内容 -->
+   <div class="container">
+     <div class="banner">
+       <h1>我的创作作品</h1>
+       <p>包含设计作品、技术文章、创意项目等，记录我的成长与思考</p>
+     </div>
+  
+     <!-- 作品分类 -->
+     <div style="background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+       <h3 style="margin-bottom: 15px;"><i class="fas fa-th-large"></i> 作品分类</h3>
+       <div class="work-categories" style="display: flex; flex-wrap: wrap; gap: 10px;">
+         <button class="category-btn btn active" data-category="all">全部作品</button>
+         <button class="category-btn btn btn-secondary" data-category="design">设计作品</button>
+         <button class="category-btn btn btn-secondary" data-category="article">技术文章</button>
+         <button class="category-btn btn btn-secondary" data-category="creative">创意项目</button>
+       </div>
+     </div>
+  
+     <!-- 作品画廊 -->
+     <div class="work-gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+       <!-- 作品1：市场人超级AI工具箱 -->
+       <div class="work-item" data-category="creative">
+         <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;">
+           <img src="images/work1.jpg" alt="市场人超级AI工具箱" style="width: 100%; height: 200px; object-fit: cover;">
+           <div style="padding: 15px;">
+             <h3 style="font-size: 1.1rem; margin-bottom: 5px; color: #2c3e50;">市场人超级AI工具箱</h3>
+             <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">依据"品牌建设+客户漏斗"双轮驱动的市场总监全流程AI工具</p>
+             <span class="tag">创意项目</span>
+           </div>
+         </div>
+       </div>
+
+       <!-- 作品2：驴思源的短篇小说集 -->
+       <div class="work-item" data-category="article">
+         <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;">
+           <img src="images/work2.jpg" alt="驴思源的短篇小说集" style="width: 100%; height: 200px; object-fit: cover;">
+           <div style="padding: 15px;">
+             <h3 style="font-size: 1.1rem; margin-bottom: 5px; color: #2c3e50;">驴思源的短篇小说集</h3>
+             <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">知乎顶级小说的学习成果展示</p>
+             <span class="tag">写作文章</span>
+           </div>
+         </div>
+       </div>
+
+       <!-- 作品3：品牌设计全案 -->
+       <div class="work-item" data-category="design">
+         <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;">
+           <img src="images/work-design1.jpg" alt="品牌设计全案" style="width: 100%; height: 200px; object-fit: cover;">
+           <div style="padding: 15px;">
+             <h3 style="font-size: 1.1rem; margin-bottom: 5px; color: #2c3e50;">品牌设计全案</h3>
+             <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">弘翊logo设计的思考</p>
+             <span class="tag">设计作品</span>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+     <!-- 作品详情模态框 -->
+    <div id="work-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+      <div style="background-color: white; border-radius: 8px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto;">
+        <div style="position: relative;">
+          <button id="close-work-modal" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; z-index: 10;"><i class="fas fa-times"></i></button>
+          <img id="work-modal-image" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px 8px 0 0;">
+        </div>
+        <div style="padding: 25px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 id="work-modal-title" style="margin: 0; color: #2c3e50;"></h2>
+            <span id="work-modal-category" style="background-color: #3498db; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem;"></span>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #34495e; font-size: 1.1rem; margin-bottom: 10px;">作品描述</h3>
+            <p id="work-modal-description" style="color: #666; line-height: 1.6;"></p>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #34495e; font-size: 1.1rem; margin-bottom: 10px;">项目背景</h3>
+            <p id="work-modal-background" style="color: #666; line-height: 1.6;"></p>
+          </div>
+          <div id="work-modal-links" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+        </div>
+      </div>
+    </div>
+    <script src="js/works.js" type="module"></script>
+  </body>
+</html>
