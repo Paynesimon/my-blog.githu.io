@@ -5,7 +5,7 @@ const path = require('path');
 
 // 初始化Express应用
 const app = express();
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3004;
 
 // 连接数据库
 require('./db');

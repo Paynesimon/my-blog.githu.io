@@ -1,5 +1,7 @@
 // 项目管理脚本
 
+import { projectAPI } from '../api.js';
+
 // 项目数据管理类
 class ProjectManager {
     constructor() {
@@ -10,7 +12,41 @@ class ProjectManager {
     // 初始化
     async init() {
         await this.loadProjects();
+        this.initModal();
         this.bindEvents();
+    }
+
+    // 初始化模态框
+    initModal() {
+        this.modal = document.getElementById('project-modal');
+        this.modalTitle = document.getElementById('modal-title');
+        this.projectForm = document.getElementById('project-form');
+        this.projectIdInput = document.getElementById('project-id');
+        this.titleInput = document.getElementById('project-title');
+        this.descriptionInput = document.getElementById('project-description');
+        this.statusInput = document.getElementById('project-status');
+        this.techInput = document.getElementById('project-tech');
+        this.progressInput = document.getElementById('project-progress');
+        this.demoInput = document.getElementById('project-demo');
+        this.githubInput = document.getElementById('project-github');
+        this.closeBtn = document.querySelector('.close-btn');
+
+        // 关闭模态框事件
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.closeModal());
+        }
+
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+
+        // 表单提交事件
+        if (this.projectForm) {
+            this.projectForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        }
     }
 
     // 从API加载项目数据
@@ -93,9 +129,24 @@ class ProjectManager {
 
     // 显示添加项目表单
     showAddProjectForm() {
-        // 在实际项目中，这里应该显示一个模态框表单
-        alert('添加项目功能将在后续实现');
-        // 实际实现时应打开模态框并加载表单
+        this.modalTitle.textContent = '添加项目';
+        this.projectForm.reset();
+        this.projectIdInput.value = '';
+        this.openModal();
+    }
+
+    // 打开模态框
+    openModal() {
+        if (this.modal) {
+            this.modal.style.display = 'block';
+        }
+    }
+
+    // 关闭模态框
+    closeModal() {
+        if (this.modal) {
+            this.modal.style.display = 'none';
+        }
     }
 
     // 编辑项目
@@ -103,9 +154,51 @@ class ProjectManager {
         const project = this.projects.find(p => p.id === id);
         if (!project) return;
 
-        // 在实际项目中，这里应该显示编辑表单
-        alert(`编辑项目: ${project.title}`);
-        // 实际实现时应打开模态框并加载项目数据到表单
+        this.modalTitle.textContent = '编辑项目';
+        this.projectIdInput.value = project.id;
+        this.titleInput.value = project.title || '';
+        this.descriptionInput.value = project.description || '';
+        this.statusInput.value = project.status || 'progress';
+        this.techInput.value = project.tech ? project.tech.join(',') : '';
+        this.progressInput.value = project.progress || 0;
+        this.demoInput.value = project.demo_link || '';
+        this.githubInput.value = project.github_link || '';
+        this.openModal();
+    }
+
+    // 处理表单提交
+    async handleFormSubmit(e) {
+        e.preventDefault();
+
+        const projectData = {
+            title: this.titleInput.value,
+            description: this.descriptionInput.value,
+            status: this.statusInput.value,
+            tech: this.techInput.value ? this.techInput.value.split(',').map(t => t.trim()) : [],
+            progress: this.progressInput.value,
+            demo_link: this.demoInput.value,
+            github_link: this.githubInput.value
+        };
+
+        try {
+            const projectId = this.projectIdInput.value;
+            if (projectId) {
+                // 编辑现有项目
+                await projectAPI.updateProject(projectId, projectData);
+                alert('项目更新成功');
+            } else {
+                // 添加新项目
+                await projectAPI.addProject(projectData);
+                alert('项目添加成功');
+            }
+
+            // 关闭模态框并刷新列表
+            this.closeModal();
+            this.loadProjects();
+        } catch (error) {
+            console.error('保存项目失败:', error);
+            alert('保存失败: ' + (error.message || '网络错误'));
+        }
     }
 
     // 删除项目
@@ -114,7 +207,7 @@ class ProjectManager {
 
         try {
             // 使用公共API请求函数
-            const result = await apiRequest(`/api/projects/${id}`, 'DELETE');
+            const result = await projectAPI.delete(id);
             if (result && result.success) {
                 // 从列表中移除并重新渲染
                 this.projects = this.projects.filter(p => p.id !== id);

@@ -4,46 +4,36 @@ const db = require('../db'); // 导入数据库连接
 
 // 1. 获取所有作品（支持按分类筛选）
 router.get('/', (req, res) => {
-  // 始终返回示例数据以测试前端
-  const works = [
-    { id: 1, title: '市场人超级AI工具箱', category: 'creative', category_name: '创意项目', thumbnail: 'images/work1.jpg', description: '依据品牌建设+客户漏斗的AI工具', links: [] },
-    { id: 2, title: '驴思源的短篇小说集', category: 'article', category_name: '写作文章', thumbnail: 'images/work2.jpg', description: '知乎小说学习成果', links: [] },
-    { id: 3, title: '品牌设计全案', category: 'design', category_name: '设计作品', thumbnail: 'images/work-design1.jpg', description: '弘翊logo设计思考', links: [] }
-    ];
-    res.json(works);
-    return;
+  const { category } = req.query;
+  let query = 'SELECT * FROM works ORDER BY created_at DESC';
+  const params = [];
 
-    // 原始数据库查询代码（暂时注释）
-    /*const { category } = req.query;
-    let query = 'SELECT * FROM works ORDER BY created_at DESC';
-    const params = [];
+  if (category && category !== 'all') {
+    query = 'SELECT * FROM works WHERE category = ? ORDER BY created_at DESC';
+    params.push(category);
+  }
 
-    if (category && category !== 'all') {
-      query = 'SELECT * FROM works WHERE category = ? ORDER BY created_at DESC';
-      params.push(category);
+  db.all(query, params, (err, rows) => {
+    console.log('查询作品结果:', rows); // 调试日志
+    if (err) {
+      res.status(500).json({ error: err.message });
+    } else if (rows.length === 0) {
+      // 数据库为空时返回示例数据
+      const works = [
+        { id: 1, title: '市场人超级AI工具箱', category: 'creative', category_name: '创意项目', thumbnail: 'images/work1.jpg', description: '依据品牌建设+客户漏斗的AI工具', links: [] },
+        { id: 2, title: '驴思源的短篇小说集', category: 'article', category_name: '写作文章', thumbnail: 'images/work2.jpg', description: '知乎小说学习成果', links: [] },
+        { id: 3, title: '品牌设计全案', category: 'design', category_name: '设计作品', thumbnail: 'images/work-design1.jpg', description: '弘翊logo设计思考', links: [] }
+      ];
+      res.json(works);
+    } else {
+      // 格式化数据（解析JSON格式的链接）
+      const works = rows.map(work => ({
+        ...work,
+        links: work.links ? JSON.parse(work.links) : []
+      }));
+      res.json(works);
     }
-
-    db.all(query, params, (err, rows) => {
-      console.log('查询作品结果:', rows); // 调试日志
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else if (rows.length === 0) {
-        // 数据库为空时返回示例数据
-        const works = [
-          { id: 1, title: '市场人超级AI工具箱', category: 'creative', category_name: '创意项目', thumbnail: 'images/work1.jpg', description: '依据品牌建设+客户漏斗的AI工具', links: [] },
-          { id: 2, title: '驴思源的短篇小说集', category: 'article', category_name: '写作文章', thumbnail: 'images/work2.jpg', description: '知乎小说学习成果', links: [] },
-          { id: 3, title: '品牌设计全案', category: 'design', category_name: '设计作品', thumbnail: 'images/work-design1.jpg', description: '弘翊logo设计思考', links: [] }
-        ];
-        res.json(works);
-      } else {
-        // 格式化数据（解析JSON格式的链接）
-        const works = rows.map(work => ({
-          ...work,
-          links: work.links ? JSON.parse(work.links) : []
-        }));
-        res.json(works);
-      }
-    });*/
+  });
 });
 
 // 2. 获取单个作品详情

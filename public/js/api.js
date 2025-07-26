@@ -1,5 +1,5 @@
 // API基础路径（后端服务器地址）
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3004/api';
 
 // 工具函数：处理请求
 async function request(url, method = 'GET', data = null) {

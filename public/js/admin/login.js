@@ -13,7 +13,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     if (username === 'test') {
       // 登录成功，跳转到后台首页
       localStorage.setItem('admin', 'true');
-      window.location.href = 'index.html';
+      window.location.href = 'works.html';
     } else {
       alert('没有管理员权限');
     }

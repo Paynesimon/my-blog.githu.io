@@ -2,6 +2,48 @@ import { workAPI } from './api.js';
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
+  // 获取DOM元素
+  const workModal = document.getElementById('work-modal');
+  const closeWorkModal = document.querySelector('.close-btn');
+  const addWorkBtn = document.getElementById('add-work-btn');
+  const workForm = document.getElementById('work-form');
+  const modalTitle = document.getElementById('modal-title');
+  const workIdInput = document.getElementById('work-id');
+  const worksTableBody = document.getElementById('works-table-body');
+
+  // 初始化
+  initEventListeners();
+  loadWorks();
+
+  // 初始化事件监听器
+  function initEventListeners() {
+    // 添加作品按钮
+    addWorkBtn.addEventListener('click', () => openModal());
+
+    // 关闭模态框
+    closeWorkModal.addEventListener('click', () => closeModal());
+    window.addEventListener('click', (e) => {
+      if (e.target === workModal) closeModal();
+    });
+
+    // 表单提交
+    workForm.addEventListener('submit', handleFormSubmit);
+
+    // 编辑和删除按钮事件委托
+    worksTableBody.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.action-btn[data-id]');
+      if (!editBtn) return;
+
+      const id = editBtn.getAttribute('data-id');
+      if (editBtn.querySelector('.fa-edit')) {
+        editWork(id);
+      } else if (editBtn.querySelector('.fa-trash')) {
+        deleteWork(id);
+      }
+    });
+  }
+
+  // 加载作品列表
   const workGallery = document.querySelector('.work-gallery');
   const categoryBtns = document.querySelectorAll('.category-btn');
   const workModal = document.getElementById('work-modal');
@@ -17,6 +59,118 @@ document.addEventListener('DOMContentLoaded', function() {
   workGallery.parentNode.insertBefore(loadingIndicator, workGallery);
 
   // 加载作品列表
+  async function loadWorks(category = 'all') {
+    try {
+      worksTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center"><i class="fas fa-spinner fa-spin"></i> 加载中...</td></tr>';
+      const works = await workAPI.getWorks(category);
+      renderWorksTable(works);
+    } catch (error) {
+      console.error('加载作品失败:', error);
+      worksTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #e74c3c;">加载失败，请刷新页面重试</td></tr>';
+    }
+  }
+
+  // 渲染作品表格
+  function renderWorksTable(works) {
+    if (works.length === 0) {
+      worksTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center">暂无作品数据</td></tr>';
+      return;
+    }
+
+    worksTableBody.innerHTML = works.map(work => `
+      <tr>
+        <td>${work.id}</td>
+        <td>${work.title}</td>
+        <td>${work.category_name}</td>
+        <td>
+          <button class="action-btn btn btn-secondary" data-id="${work.id}"><i class="fas fa-edit"></i> 编辑</button>
+          <button class="action-btn btn btn-secondary" data-id="${work.id}"><i class="fas fa-trash"></i> 删除</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // 打开模态框
+  function openModal(work = null) {
+    // 重置表单
+    workForm.reset();
+    workIdInput.value = '';
+    modalTitle.textContent = work ? '编辑作品' : '添加作品';
+    workModal.style.display = 'block';
+
+    // 如果是编辑，填充表单数据
+    if (work) {
+      workIdInput.value = work.id;
+      document.getElementById('work-title').value = work.title;
+      document.getElementById('work-category').value = work.category;
+      document.getElementById('work-description').value = work.description || '';
+      document.getElementById('work-thumbnail').value = work.thumbnail || '';
+    }
+  }
+
+  // 关闭模态框
+  function closeModal() {
+    workModal.style.display = 'none';
+  }
+
+  // 处理表单提交
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+
+    const workData = {
+      title: document.getElementById('work-title').value,
+      category: document.getElementById('work-category').value,
+      category_name: document.getElementById('work-category').options[document.getElementById('work-category').selectedIndex].text,
+      description: document.getElementById('work-description').value,
+      thumbnail: document.getElementById('work-thumbnail').value
+    };
+
+    try {
+      const workId = workIdInput.value;
+      if (workId) {
+        // 编辑现有作品
+        await workAPI.updateWork(workId, workData);
+        alert('作品更新成功');
+      } else {
+        // 添加新作品
+        await workAPI.addWork(workData);
+        alert('作品添加成功');
+      }
+
+      closeModal();
+      loadWorks(); // 重新加载作品列表
+    } catch (error) {
+      console.error('保存作品失败:', error);
+      alert('保存失败: ' + error.message);
+    }
+  }
+
+  // 编辑作品
+  async function editWork(id) {
+    try {
+      const work = await workAPI.getWork(id);
+      openModal(work);
+    } catch (error) {
+      console.error('加载作品详情失败:', error);
+      alert('加载作品详情失败: ' + error.message);
+    }
+  }
+
+  // 删除作品
+  async function deleteWork(id) {
+    if (!confirm('确定要删除这个作品吗？')) return;
+
+    try {
+      await workAPI.deleteWork(id);
+      alert('作品删除成功');
+      loadWorks(); // 重新加载作品列表
+    } catch (error) {
+      console.error('删除作品失败:', error);
+      alert('删除失败: ' + error.message);
+    }
+  }
+
+  // 原始加载作品列表代码
   async function loadWorks(category = 'all') {
     try {
       // 显示加载状态

@@ -2,6 +2,48 @@ import { projectAPI } from './api.js';
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
+  // 获取DOM元素
+  const projectModal = document.getElementById('project-modal');
+  const closeProjectModal = document.querySelector('.close-btn');
+  const addProjectBtn = document.getElementById('add-project-btn');
+  const projectForm = document.getElementById('project-form');
+  const modalTitle = document.getElementById('modal-title');
+  const projectIdInput = document.getElementById('project-id');
+  const projectsTableBody = document.getElementById('projects-table-body');
+
+  // 初始化
+  initEventListeners();
+  loadProjects();
+
+  // 初始化事件监听器
+  function initEventListeners() {
+    // 添加项目按钮
+    addProjectBtn.addEventListener('click', () => openModal());
+
+    // 关闭模态框
+    closeProjectModal.addEventListener('click', () => closeModal());
+    window.addEventListener('click', (e) => {
+      if (e.target === projectModal) closeModal();
+    });
+
+    // 表单提交
+    projectForm.addEventListener('submit', handleFormSubmit);
+
+    // 编辑和删除按钮事件委托
+    projectsTableBody.addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('.action-btn[data-id]');
+      if (!actionBtn) return;
+
+      const id = actionBtn.getAttribute('data-id');
+      if (actionBtn.querySelector('.fa-edit')) {
+        editProject(id);
+      } else if (actionBtn.querySelector('.fa-trash')) {
+        deleteProject(id);
+      }
+    });
+  }
+
+  // 加载项目列表
   const projectList = document.getElementById('project-list');
   const statusFilter = document.getElementById('status-filter');
   const techFilter = document.getElementById('tech-filter');
@@ -24,30 +66,40 @@ document.addEventListener('DOMContentLoaded', function() {
   // 加载项目列表
   async function loadProjects(filters = {}) {
     try {
-      // 显示加载状态
-      loadingIndicator.style.display = 'block';
-      projectList.innerHTML = '';
-      
-      // 调用API获取项目数据
+      projectsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center"><i class="fas fa-spinner fa-spin"></i> 加载中...</td></tr>';
       const projects = await projectAPI.getProjects(filters);
-      
-      if (projects.length === 0) {
-        projectList.innerHTML = '<div style="text-align: center; padding: 30px;">没有找到匹配的项目</div>';
-        return;
-      }
-      
-      // 生成项目卡片
-      projects.forEach(project => {
-        const projectCard = createProjectCard(project);
-        projectList.appendChild(projectCard);
-      });
+      renderProjectsTable(projects);
     } catch (error) {
-      projectList.innerHTML = '<div style="text-align: center; padding: 30px; color: #e74c3c;">加载项目失败，请稍后重试</div>';
-    } finally {
-      // 隐藏加载状态
-      loadingIndicator.style.display = 'none';
+      console.error('加载项目失败:', error);
+      projectsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #e74c3c;">加载失败，请刷新页面重试</td></tr>';
     }
   }
+
+  // 渲染项目表格
+  function renderProjectsTable(projects) {
+    if (projects.length === 0) {
+      projectsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">暂无项目数据</td></tr>';
+      return;
+    }
+
+    projectsTableBody.innerHTML = projects.map(project => {
+      // 处理状态样式
+      const statusClass = project.status === 'completed' ? 'background: #2ecc71' : 'background: #3498db';
+      const statusText = project.status === 'completed' ? '已完成' : '进行中';
+      const techTags = project.tech.join(', ');
+
+      return `
+        <tr>
+          <td>${project.id}</td>
+          <td>${project.title}</td>
+          <td><span style="${statusClass}; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem;">${statusText}</span></td>
+          <td>${techTags}</td>
+          <td>
+            <button class="action-btn btn btn-secondary" data-id="${project.id}"><i class="fas fa-edit"></i> 编辑</button>
+            <button class="action-btn btn btn-secondary" data-id="${project.id}"><i class="fas fa-trash"></i> 删除</button>
+          </td>
+        </tr>
+      `
 
   // 创建项目卡片
   function createProjectCard(project) {

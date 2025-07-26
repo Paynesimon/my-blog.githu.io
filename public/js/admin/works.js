@@ -89,21 +89,101 @@ class WorkManager {
         }
     }
 
-    // 显示添加作品表单
-    showAddWorkForm() {
-        // 在实际项目中，这里应该显示一个模态框表单
-        alert('添加作品功能将在后续实现');
-        // 实际实现时应打开模态框并加载表单
+    // 初始化模态框
+    initModal() {
+        this.modal = document.getElementById('work-modal');
+        this.modalTitle = document.getElementById('modal-title');
+        this.workForm = document.getElementById('work-form');
+        this.workIdInput = document.getElementById('work-id');
+        this.titleInput = document.getElementById('work-title');
+        this.categoryInput = document.getElementById('work-category');
+        this.descriptionInput = document.getElementById('work-description');
+        this.thumbnailInput = document.getElementById('work-thumbnail');
+        this.closeBtn = document.querySelector('.close-btn');
+
+        // 关闭模态框事件
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.closeModal());
+        }
+
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.closeModal();
+            }
+        });
+
+        // 表单提交事件
+        if (this.workForm) {
+            this.workForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+        }
     }
 
-    // 编辑作品
+    // 显示添加作品表单
+    showAddWorkForm() {
+        this.modalTitle.textContent = '添加作品';
+        this.workForm.reset();
+        this.workIdInput.value = '';
+        this.openModal();
+    }
+
+    // 显示编辑作品表单
     editWork(id) {
         const work = this.works.find(w => w.id === id);
         if (!work) return;
 
-        // 在实际项目中，这里应该显示编辑表单
-        alert(`编辑作品: ${work.title}`);
-        // 实际实现时应打开模态框并加载作品数据到表单
+        this.modalTitle.textContent = '编辑作品';
+        this.workIdInput.value = work.id;
+        this.titleInput.value = work.title || '';
+        this.categoryInput.value = work.category || 'creative';
+        this.descriptionInput.value = work.description || '';
+        this.thumbnailInput.value = work.thumbnail || '';
+        this.openModal();
+    }
+
+    // 打开模态框
+    openModal() {
+        if (this.modal) {
+            this.modal.style.display = 'block';
+        }
+    }
+
+    // 关闭模态框
+    closeModal() {
+        if (this.modal) {
+            this.modal.style.display = 'none';
+        }
+    }
+
+    // 处理表单提交
+    async handleFormSubmit(e) {
+        e.preventDefault();
+
+        const workData = {
+            title: this.titleInput.value,
+            category: this.categoryInput.value,
+            description: this.descriptionInput.value,
+            thumbnail: this.thumbnailInput.value
+        };
+
+        try {
+            const workId = this.workIdInput.value;
+            if (workId) {
+                // 编辑现有作品
+                await workAPI.updateWork(workId, workData);
+                alert('作品更新成功');
+            } else {
+                // 添加新作品
+                await workAPI.addWork(workData);
+                alert('作品添加成功');
+            }
+
+            // 关闭模态框并刷新列表
+            this.closeModal();
+            this.loadWorks();
+        } catch (error) {
+            console.error('保存作品失败:', error);
+        }
     }
 
     // 删除作品
@@ -112,7 +192,7 @@ class WorkManager {
 
         try {
             // 使用公共API请求函数
-            const result = await apiRequest(`/api/works/${id}`, 'DELETE');
+            const result = await workAPI.delete(id);
             if (result && result.success) {
                 // 从列表中移除并重新渲染
                 this.works = this.works.filter(w => w.id !== id);

@@ -113,7 +113,7 @@ class PostManager {
 
         try {
             // 使用公共API请求函数
-            const result = await apiRequest(`/api/posts/${id}`, 'DELETE');
+            const result = await communityAPI.deletePost(id);
             if (result && result.success) {
                 // 从列表中移除并重新渲染
                 this.posts = this.posts.filter(p => p.id !== id);
