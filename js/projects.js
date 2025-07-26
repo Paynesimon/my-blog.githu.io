@@ -312,4 +312,4 @@ if (closeModalBtn) {
   setupFilters();
   loadProjects();
 }
-});
+}

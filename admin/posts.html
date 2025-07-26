@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品管理 | 驴思源的草料棚</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <title>帖子管理 | 驴思源的草料棚</title>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .admin-container { display: flex; min-height: 100vh; }
@@ -30,52 +30,56 @@
             <ul class="sidebar-menu">
                 <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> 控制台</a></li>
                 <li><a href="projects.html"><i class="fas fa-code-branch"></i> 项目管理</a></li>
-                <li><a href="works.html" class="active"><i class="fas fa-lightbulb"></i> 作品管理</a></li>
-                <li><a href="posts.html"><i class="fas fa-comment"></i> 帖子管理</a></li>
+                <li><a href="works.html"><i class="fas fa-lightbulb"></i> 作品管理</a></li>
+                <li><a href="posts.html" class="active"><i class="fas fa-comment"></i> 帖子管理</a></li>
             </ul>
         </aside>
         <main class="main-content">
             <div class="admin-header">
-                <h1>作品管理</h1>
-                <button id="add-work-btn" class="btn"><i class="fas fa-plus"></i> 添加作品</button>
+                <h1>帖子管理</h1>
+                <button id="add-post-btn" class="btn"><i class="fas fa-plus"></i> 添加帖子</button>
             </div>
             <div class="card">
-                <h2>作品列表</h2>
+                <h2>帖子列表</h2>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>标题</th>
-                            <th>分类</th>
+                            <th>作者</th>
+                            <th>发布时间</th>
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody id="works-table-body">
-                        <!-- 作品数据将通过JS动态加载 -->
+                    <tbody id="posts-table-body">
+                        <!-- 帖子数据将通过JS动态加载 -->
                         <tr>
                             <td>1</td>
-                            <td>市场人超级AI工具箱</td>
-                            <td>创意项目</td>
+                            <td>欢迎来到驴友的草料房</td>
+                            <td>驴思源</td>
+                            <td>刚刚</td>
                             <td>
-                                <button class="action-btn btn btn-secondary" data-id="1"><i class="fas fa-edit"></i> 编辑</button>
+                                <a href="post-editor.html?id=1" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i> 编辑</a>
                                 <button class="action-btn btn btn-secondary" data-id="1"><i class="fas fa-trash"></i> 删除</button>
                             </td>
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>驴思源的短篇小说集</td>
-                            <td>写作文章</td>
+                            <td>关于任务管理应用的功能建议</td>
+                            <td>张小明</td>
+                            <td>2天前</td>
                             <td>
-                                <button class="action-btn btn btn-secondary" data-id="2"><i class="fas fa-edit"></i> 编辑</button>
+                                <a href="post-editor.html?id=2" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i> 编辑</a>
                                 <button class="action-btn btn btn-secondary" data-id="2"><i class="fas fa-trash"></i> 删除</button>
                             </td>
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>品牌设计全案</td>
-                            <td>设计作品</td>
+                            <td>UI设计中的颜色搭配请教</td>
+                            <td>王小红</td>
+                            <td>5天前</td>
                             <td>
-                                <button class="action-btn btn btn-secondary" data-id="3"><i class="fas fa-edit"></i> 编辑</button>
+                                <a href="post-editor.html?id=3" class="action-btn btn btn-secondary"><i class="fas fa-edit"></i> 编辑</a>
                                 <button class="action-btn btn btn-secondary" data-id="3"><i class="fas fa-trash"></i> 删除</button>
                             </td>
                         </tr>
@@ -83,40 +87,8 @@
                 </table>
             </div>
         </main>
-
-        <!-- 添加作品模态框 -->
-        <div id="work-modal" class="modal">
-          <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2 id="modal-title">添加作品</h2>
-            <form id="work-form">
-              <input type="hidden" id="work-id">
-              <div class="form-group">
-                <label for="work-title">标题</label>
-                <input type="text" id="work-title" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <label for="work-category">分类</label>
-                <select id="work-category" class="form-control" required>
-                  <option value="creative">创意项目</option>
-                  <option value="article">写作文章</option>
-                  <option value="design">设计作品</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="work-description">描述</label>
-n                <textarea id="work-description" class="form-control" rows="3"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="work-thumbnail">缩略图URL</label>
-                <input type="text" id="work-thumbnail" class="form-control">
-              </div>
-              <button type="submit" class="btn btn-primary">保存</button>
-            </form>
-          </div>
-        </div>
     </div>
-    <script type="module" src="../../js/admin/common.js?v=1"></script>
-      <script type="module" src="../../js/admin/works.js?v=1"></script>
+    <script src="../js/admin/common.js"></script>
+    <script src="../js/admin/posts.js"></script>
 </body>
 </html>

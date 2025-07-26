@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // 解析表单数据
 
 // 静态文件服务（提供前端页面访问）
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '..')));
 
 // 路由配置
 app.use('/api/projects', require('./routes/projects'));
